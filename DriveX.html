@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DriveX | Performance Car Accessories</title>
+<style>
+:root{
+--dark:#0b0b0b;
+--light:#fff;
+--grey:#aaa;
+--accent:#ff2d2d;
+--accent2:#ff9800;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif;}
+body{
+background:linear-gradient(180deg,#050505,#111);
+color:white;
+}
+.bg{
+background:
+linear-gradient(rgba(0,0,0,.85),rgba(0,0,0,.9)),
+url("https://images.unsplash.com/photo-1493238792000-8113da705763");
+background-size:cover;
+background-attachment:fixed;
+}
+nav{
+display:flex;
+justify-content:space-between;
+padding:20px 40px;
+background:#000;
+position:sticky;
+top:0;
+z-index:100;
+}
+nav h1{color:var(--accent);letter-spacing:3px;}
+nav a{
+color:white;
+margin-left:18px;
+cursor:pointer;
+font-size:14px;
+}
+nav a:hover{color:var(--accent);}
+.cart-badge{
+background:var(--accent);
+padding:2px 8px;
+border-radius:20px;
+font-size:12px;
+margin-left:5px;
+}
+section{padding:80px 40px;animation:fade .6s ease;}
+.hidden{display:none;}
+@keyframes fade{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;}
+}
+ 
+.hero{text-align:center;padding:140px 20px;}
+.hero h2{
+font-size:48px;
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+-webkit-background-clip:text;
+color:transparent;
+}
+.hero p{margin-top:10px;color:var(--grey);}
+.btn{
+background:linear-gradient(135deg,var(--accent),var(--accent2));
+ 
+border:none;
+padding:10px 22px;
+color:white;
+cursor:pointer;
+margin-top:15px;
+transition:.3s;
+}
+.btn:hover{transform:scale(1.05);box-shadow:0 0 15px var(--accent);}
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+margin-top:30px;
+}
+.card{
+background:#141414;
+padding:20px;
+border-radius:8px;
+transition:.3s;
+text-align:center;
+}
+.card:hover{
+transform:translateY(-8px);
+box-shadow:0 0 20px rgba(255,45,45,.4);
+}
+.icon{
+ 
+font-size:50px;
+animation:bounce 2s infinite;
+filter:drop-shadow(0 0 6px var(--accent));
+}
+@keyframes bounce{
+0%,100%{transform:translateY(0);}
+50%{transform:translateY(-6px);}
+}
+ul li{margin:8px 0;}
+.remove{color:var(--accent);cursor:pointer;margin-left:10px;}
+.toast{
+position:fixed;
+bottom:30px;
+right:30px;
+background:#111;
+padding:15px 20px;
+border-left:5px solid var(--accent);
+display:none;
+}
+/* ORDER SUCCESS */
+.success{
+text-align:center;
+padding:120px 20px;
+animation:success 0.8s ease;
+}
+ 
+.success .check{
+font-size:80px;
+color:var(--accent2);
+animation:pulse 1.5s infinite;
+}
+@keyframes success{
+from{opacity:0;transform:scale(0.8);}
+to{opacity:1;transform:scale(1);}
+}
+@keyframes pulse{
+0%,100%{transform:scale(1);}
+50%{transform:scale(1.15);}
+}
+input,textarea{
+width:100%;
+padding:10px;
+margin-top:10px;
+background:#222;
+border:none;
+color:white;
+}
+footer{text-align:center;padding:30px;background:#000;color:var(--grey);}
+</style>
+</head>
+<body class="bg">
+<nav>
+<h1>DriveX</h1>
+<div>
+<a onclick="show('home')">Home</a>
+<a onclick="show('shop')">Shop</a>
+<a onclick="show('cart')">Cart <span class="cart-badge" id="count">0</span></a>
+<a onclick="show('about')">About</a>
+<a onclick="show('reviews')">Reviews</a>
+<a onclick="show('contact')">Contact</a>
+</div>
+</nav>
+<section id="home">
+<div class="hero">
+<h2>Built for Speed. Designed to Perform.</h2>
+<p>Race-inspired automotive accessories</p>
+<button class="btn" onclick="show('shop')">Explore Products</button>
+</div>
+</section>
+<section id="shop" class="hidden">
+<h2>Shop Accessories</h2>
+<div class="grid" id="products"></div>
+ 
+</section>
+<section id="cart" class="hidden">
+<h2>Your Cart</h2>
+<ul id="cartItems"></ul>
+<h3 id="total"></h3>
+<button class="btn" onclick="placeOrder()">Place Order</button>
+</section>
+<section id="success" class="hidden">
+<div class="success">
+<div class="check">✔</div>
+<h2>Order Placed Successfully!</h2>
+<p>Your ride just got an upgrade 🚗🔥</p>
+<p style="color:var(--grey)">Thanks for choosing DriveX</p>
+<button class="btn" onclick="show('shop')">Continue Shopping</button>
+</div>
+</section>
+<section id="about" class="hidden">
+<h2>About DriveX</h2>
+<p>
+DriveX is a motorsport-inspired automotive accessories brand built by car 
+enthusiasts.
+We design aggressive, durable, and functional upgrades made for Indian roads.
+</p>
+</section>
+<section id="reviews" class="hidden">
+<h2>Customer Reviews</h2>
+⭐⭐⭐⭐⭐ Feels premium & sporty<br>
+⭐⭐⭐⭐ Looks racing ready<br><br>
+<input placeholder="Your Name">
+<textarea placeholder="Your Feedback"></textarea>
+<button class="btn">Submit</button>
+</section>
+<section id="contact" class="hidden">
+<h2>Contact</h2>
+<form onsubmit="return validateContact()">
+<input type="email" id="email" placeholder="Email">
+<input type="text" id="phone" placeholder="Phone">
+<textarea id="message" placeholder="Message"></textarea>
+<button class="btn" type="submit">Send</button>
+</form>
+</section>
+<footer>© 2025 DriveX | Performance Automotive Brand</footer>
+<div class="toast" id="toast">✔ Added to Cart</div>
+<script>
+const products=[
+{name:"Phone Mount",price:799,icon:"📱"},
+{name:"Steering Cover",price:999,icon:"🛞"},
+{name:"LED Headlights",price:2499,icon:"💡"},
+{name:"Dash Cam",price:3999,icon:"📷"},
+{name:"Car Vacuum Cleaner",price:1899,icon:"🧹"},
+{name:"Alloy Wheel Caps",price:1499,icon:"⚙️"},
+{name:"Seat Cushion Set",price:2199,icon:"💺"},
+{name:"Neck Pillow",price:899,icon:"🛋️"},
+{name:"Door Edge Guards",price:699,icon:"🚪"},
+{name:"Car Air Purifier",price:3499,icon:"🌬️"},
+{name:"Tyre Inflator",price:2999,icon:"🛠️"},
+{name:"Car Cover",price:2799,icon:"🚗"},
+{name:"Ambient LED Lights",price:1999,icon:"🌈"},
+{name:"Blind Spot Mirrors",price:499,icon:"🪞"},
+{name:"Sunshade Curtain",price:1199,icon:"🌞"},
+{name:"Roof Rail Carrier",price:6499,icon:"📦"},
+{name:"Rear Parking Sensors",price:3299,icon:"📡"},
+{name:"Gear Knob",price:899,icon:"⚙️"},
+{name:"Premium Floor Mats",price:2599,icon:"🧽"},
+{name:"Car Organizer",price:1299,icon:"🗂️"},
+{name:"Bluetooth FM Transmitter",price:1599,icon:"🎶"},
+{name:"Tyre Pressure Monitor",price:4599,icon:"📊"},
+{name:"Fog Lamps",price:2899,icon:"🌫️"},
+{name:"Windshield Polish Kit",price:999,icon:"🧴"},
+{name:"Reverse Camera",price:3799,icon:"📸"},
+{name:"Door Handle Covers",price:1099,icon:"🔩"},
+{name:"Car Trash Bin",price:699,icon:"🗑️"},
+{name:"Jump Starter Kit",price:5499,icon:"⚡"},
+{name:"Dashboard Polish",price:799,icon:"✨"}
+];
+let cart=[],total=0;
+function show(id){
+document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+document.getElementById(id).classList.remove("hidden");
+}
+const productDiv=document.getElementById("products");
+products.forEach((p,i)=>{
+productDiv.innerHTML+=`
+<div class="card">
+<div class="icon">${p.icon}</div>
+<h4>${p.name}</h4>
+<p>₹${p.price}</p>
+<button class="btn" onclick="add(${i})">Add to Cart</button>
+</div>`;
+});
+function add(i){
+cart.push(products[i]);
+total+=products[i].price;
+update();
+toast();
+}
+function removeItem(i){
+total-=cart[i].price;
+cart.splice(i,1);
+update();
+}
+ 
+function update(){
+document.getElementById("count").innerText=cart.length;
+const list=document.getElementById("cartItems");
+list.innerHTML="";
+cart.forEach((c,i)=>{
+list.innerHTML+=`<li>${c.name} - ₹${c.price}<span class="remove" 
+onclick="removeItem(${i})">✖</span></li>`;
+});
+document.getElementById("total").innerText="Total: ₹"+total;
+}
+function placeOrder(){
+if(cart.length===0) return alert("Cart is empty!");
+cart=[];
+total=0;
+update();
+show("success");
+}
+function toast(){
+const t=document.getElementById("toast");
+t.style.display="block";
+setTimeout(()=>t.style.display="none",1200);
+}
+</script>
+</body>
+</html>
